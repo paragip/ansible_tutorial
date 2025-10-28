@@ -1,22 +1,14 @@
 ---
 
-- hosts: all
-  become: true
+- hosts: all # playbook will be running on all hosts listed in inventory file
+  become: true # run with sudo, ask for sudo password during run
   tasks:
 
-  - name: update repository index
-    apt:
+  - name: install apache2 and php
+    package: # linux-independent keyword for the package manager (pl. apt)
+      name:
+        - " {{ apache_package }}" # variable which is defined in the inventory file
+        - " {{ php_package }} " # variable which is defined in the inventory file
+      state: latest
       update_cache: yes
-    when: ansible_distribution == "Ubuntu"
 
-  - name: install apache2 package
-    apt:
-      name: apache2
-      state: latest
-    when: ansible_distribution == "Ubuntu"
-
-  - name: add php support for apache
-    apt:
-      name: libapache2-mod-php
-      state: latest
-    when: ansible_distribution in ["Debian", "Ubuntu"]
